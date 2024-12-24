@@ -89,7 +89,7 @@ static void add_zeroes(bigint* n, unsigned int zeroes) {
 	}
 
 	for (i = 0; i < zeroes; i++) {
-		if (bigint_insert_after(last_node, 0)) printf("errore mannaggia");
+		if (bigint_insert_after(last_node, 0)) printf("\nerrore mannaggia");
 
 		if (last_node->next != NULL) last_node = last_node->next;
 	}

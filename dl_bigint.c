@@ -78,12 +78,12 @@ static int handle_carry(bigint* tail) {
 	return 0;
 }
 
-static bigint* add_zeroes(bigint* n, unsigned int zeroes) {
+static void add_zeroes(bigint* n, unsigned int zeroes) {
 
 }
 
-static bigint* digit_mult(bigint* n, unsigned int k) {
-
+static void digit_mult(bigint* n, unsigned int k) {
+	bigint* node = n;
 }
 
 bigint *mul(bigint *N1, bigint *N2) {

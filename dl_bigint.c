@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "bigint.h"
 
+/*from 2019*/
 static bigint* bigint_alloc(digit x) {
 	bigint* tmp = (bigint*)malloc(sizeof(bigint));
 
@@ -12,22 +13,7 @@ static bigint* bigint_alloc(digit x) {
 	return tmp;
 }
 
-static int bigint_insert_after(bigint* N, digit x) {
-	if (N == NULL) {
-		return 1;
-	}
-	else {
-		bigint* tmp = bigint_alloc(x), * nxt = N->next, * prv = N;
-		if (tmp != NULL) {
-			tmp->prev = prv;
-			tmp->next = nxt;
-			prv->next = tmp;
-			nxt->prev = tmp;
-		}
-		return tmp == NULL;
-	}
-}
-
+/*from 2019*/
 static int head_insert(bigint** N, digit x) {
 	if (N == NULL) return 1;
 	else if (*N == NULL) {
@@ -45,25 +31,9 @@ static int head_insert(bigint** N, digit x) {
 	}
 }
 
-static int bigint_insert_head(bigint* N, digit x) {
-	if (N == NULL) {
-		return 1;
-	}
-	else {
-		bigint* tmp = bigint_alloc(x);
-		if (tmp != NULL) {
-			tmp->prev = NULL;
-			tmp->next = N;
-			N->prev = tmp;
-		}
-		return tmp == NULL;
-	}
-}
-
-
-/*fixes the carry in the bigint, takes pointer to LSB and keeps it there*/
-static int handle_carry(bigint* tail) {
-	bigint* node = tail;
+/*works - does not move pointer*/
+static int handle_carry(bigint* lsb) {
+	bigint* node = lsb;
 	unsigned int c = node->x / 10;
 	while (node->prev != NULL) {
 		if (node->x > 9) {
@@ -76,11 +46,12 @@ static int handle_carry(bigint* tail) {
 		node->x += c;
 	}
 	if (node->x > 9) {
-		if (bigint_insert_head(node, c) == 1) return 1;
+		if (head_insert(&node, c) == 1) return 1;
 	}
 	return 0;
 }
 
+/*does it work?*/
 static void add_zeroes(bigint* n, unsigned int zeroes) {
 	
 	int i = 0;
@@ -99,31 +70,24 @@ static void add_zeroes(bigint* n, unsigned int zeroes) {
 
 }
 
-static bigint* digit_mult(bigint* n, unsigned int k) { /*takes LSB, no carry for now*/
+/*works - does not move poiter*/
+static bigint* digit_mult(bigint* lsb, unsigned int k) {
 	
-	bigint* node = n, *res = bigint_alloc(node->x * k);
+	bigint* node = lsb, *res = bigint_alloc(node->x * k), *res_lsb = res;
 
 	node = node->prev;
 	while (node != NULL) {
 		head_insert(&res, node->x * k);
 		node = node->prev;
 	}
-	//tail->x *= k;
-	//if (handle_carry(tail)) printf("\nerror");
+	
+	if (handle_carry(res_lsb)) printf("\nerror");
 	return res;
 }
 
-///*clones a NON-NULL bigint*/
-//static bigint* clone(bigint* n) {
-//	bigint* c = bigint_alloc(n->x), *t = c;
-//	while (n != NULL) {
-//		bigint_insert_after(t, n->x);
-//		n = n->next;
-//		t = t->next;
-//	}
-//	return c;
-//}
 
+
+/**/
 bigint *mul(bigint *N1, bigint *N2) {
 	bigint *N = NULL;
 

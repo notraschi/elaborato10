@@ -79,6 +79,20 @@ static int handle_carry(bigint* tail) {
 }
 
 static void add_zeroes(bigint* n, unsigned int zeroes) {
+	
+	int i = 0;
+
+	bigint* last_node = n;
+
+	while (last_node->next != NULL) {
+		last_node = last_node->next;
+	}
+
+	for (i = 0; i < zeroes; i++) {
+		if (bigint_insert_after(last_node, 0)) printf("errore mannaggia");
+
+		if (last_node->next != NULL) last_node = last_node->next;
+	}
 
 }
 

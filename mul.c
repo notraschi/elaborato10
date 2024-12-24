@@ -133,19 +133,19 @@ void print(bigint *N) {
 	}
 }
 
-int main(int argc, char *argv[]) {
-	bigint *N1, *N2, *N;
-
-	if(argc != 3) {
-		fprintf(stderr,"Usage: mul <n1> <n2>\n");
-		return 0;
-	}
-	
-	N1 = str2bigint(argv[1]);
-	N2 = str2bigint(argv[2]);
-	N  = mul(N1,N2);
-	
-	print(N);printf("\n");
-	
-	return 0;
-}
+//int main(int argc, char *argv[]) {
+//	bigint *N1, *N2, *N;
+//
+//	if(argc != 3) {
+//		fprintf(stderr,"Usage: mul <n1> <n2>\n");
+//		return 0;
+//	}
+//	
+//	N1 = str2bigint(argv[1]);
+//	N2 = str2bigint(argv[2]);
+//	N  = mul(N1,N2);
+//	
+//	print(N);printf("\n");
+//	
+//	return 0;
+//}

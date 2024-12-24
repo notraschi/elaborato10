@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "bigint.h"
 
+static void print(bigint* N);
+
 /*from 2019*/
 static bigint* bigint_alloc(digit x) {
 	bigint* tmp = (bigint*)malloc(sizeof(bigint));
@@ -34,14 +36,16 @@ static int head_insert(bigint** N, digit x) {
 /*works - does not move pointer*/
 static int handle_carry(bigint* lsb) {
 	bigint* node = lsb;
+
+	/*redundant set in case of not entering loop*/
 	unsigned int c = node->x / 10;
+
 	while (node->prev != NULL) {
-		if (node->x > 9) {
-			c = node->x / 10;
-			node->x %= 10;
-		} else {
-			c = 0;
-		}
+		
+		/*if node->x < 9 then c = 0*/
+		c = node->x / 10;
+		node->x %= 10;
+		
 		node = node->prev;
 		node->x += c;
 	}
@@ -51,23 +55,25 @@ static int handle_carry(bigint* lsb) {
 	return 0;
 }
 
-/*does it work?*/
+/*works*/
 static void add_zeroes(bigint* n, unsigned int zeroes) {
 	
-	int i = 0;
-
+	/*get last node*/
 	bigint* last_node = n;
-
 	while (last_node->next != NULL) {
 		last_node = last_node->next;
 	}
 
+	/*create dl list of zeroes*/
+	int i;
+	bigint* z_head = NULL;
 	for (i = 0; i < zeroes; i++) {
-		if (bigint_insert_after(last_node, 0)) printf("\nerrore mannaggia");
-
-		if (last_node->next != NULL) last_node = last_node->next;
+		head_insert(&z_head, 0);
 	}
 
+	/*merge lists*/
+	last_node->next = z_head;
+	if (z_head != NULL) z_head->prev = last_node;
 }
 
 /*works - does not move poiter*/
@@ -117,5 +123,33 @@ bigint *mul(bigint *N1, bigint *N2) {
 
 	N = digit_mult(n, d->x);
 	N->x *= sign;
+	add_zeroes(N, 3);
 	return N;
+}
+
+/*############################# testing ################################*/
+
+static void print(bigint* N) {
+	if (N == NULL) {
+		printf("NaN");
+	}
+	else {
+		while (N != NULL) {
+			printf("%d -> ", N->x);
+			N = N->next;
+		}
+	}
+	printf("\n");
+}
+
+int main(int argc, char* argv[]) {
+	bigint* N1, * N2, * N;
+
+	N1 = bigint_alloc(2);
+	N2 = bigint_alloc(4);
+	N = mul(N1, N2);
+
+	print(N);
+
+	return 0;
 }

@@ -25,7 +25,7 @@ static int bigint_delete(bigint* N) {
 	}
 }
 
-static int bigint_insert(bigint* N, digit x) {
+static int bigint_insert_after(bigint* N, digit x) {
 	if (N == NULL) {
 		return 1;
 	}
@@ -41,7 +41,47 @@ static int bigint_insert(bigint* N, digit x) {
 	}
 }
 
-/*non sto pensando ai neg per ora*/
+static int bigint_insert_head(bigint* N, digit x) {
+	if (N == NULL) {
+		return 1;
+	}
+	else {
+		bigint* tmp = bigint_alloc(x);
+		if (tmp != NULL) {
+			tmp->prev = NULL;
+			tmp->next = N;
+			N->prev = tmp;
+		}
+		return tmp == NULL;
+	}
+}
+
+
+/*fixes the carry in the bigint, takes pointer to LSB and keeps it there*/
+static int handle_carry(bigint* tail) {
+	bigint* node = tail;
+	unsigned int c = 0;
+	while (node->prev != NULL) {
+		if (node->x > 9) {
+			c = node->x / 10;
+			node->x %= 10;
+		} else {
+			c = 0;
+		}
+		node = node->prev;
+		node->x += c;
+	}
+	if (node->x > 9) {
+		if (bigint_insert_head(node, c) == 1) return 1;
+		printf("allocated new head");
+	}
+	return 0;
+}
+
+static bigint* digit_mult(bigint* n, unsigned int k) {
+
+}
+
 bigint *mul(bigint *N1, bigint *N2) {
 	bigint *N = NULL;
 
@@ -66,6 +106,7 @@ bigint *mul(bigint *N1, bigint *N2) {
 		len++;
 	}
 
+	
 	/**/
 
 	N->x *= sign;

@@ -78,6 +78,10 @@ static int handle_carry(bigint* tail) {
 	return 0;
 }
 
+static bigint* add_zeroes(bigint* n, unsigned int zeroes) {
+
+}
+
 static bigint* digit_mult(bigint* n, unsigned int k) {
 
 }

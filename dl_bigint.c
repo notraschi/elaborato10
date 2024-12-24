@@ -89,7 +89,7 @@ static void digit_mult(bigint* n, unsigned int k) { /*takes MSB*/
 		node = node->next;
 	}
 	node->x *= k;
-	if (handle_carry(n)) printf("\nerror");
+	if (handle_carry(node)) printf("\nerror");
 }
 
 bigint *mul(bigint *N1, bigint *N2) {

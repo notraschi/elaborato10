@@ -73,7 +73,7 @@ static int handle_carry(bigint* tail) {
 	}
 	if (node->x > 9) {
 		if (bigint_insert_head(node, c) == 1) return 1;
-		printf("allocated new head");
+		printf("\nallocated new head");
 	}
 	return 0;
 }
@@ -82,8 +82,14 @@ static void add_zeroes(bigint* n, unsigned int zeroes) {
 
 }
 
-static void digit_mult(bigint* n, unsigned int k) {
+static void digit_mult(bigint* n, unsigned int k) { /*takes MSB*/
 	bigint* node = n;
+	while (node->next != NULL) {
+		node->x *= k;
+		node = node->next;
+	}
+	node->x *= k;
+	if (handle_carry(n)) printf("\nerror");
 }
 
 bigint *mul(bigint *N1, bigint *N2) {

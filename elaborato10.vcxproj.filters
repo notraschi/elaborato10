@@ -15,12 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src.c">
+    <ClCompile Include="mul.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cl_bigint.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dl_bigint.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header.h">
+    <ClInclude Include="bigint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

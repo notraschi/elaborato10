@@ -60,7 +60,7 @@ static int bigint_insert_head(bigint* N, digit x) {
 /*fixes the carry in the bigint, takes pointer to LSB and keeps it there*/
 static int handle_carry(bigint* tail) {
 	bigint* node = tail;
-	unsigned int c = 0;
+	unsigned int c = node->x / 10;
 	while (node->prev != NULL) {
 		if (node->x > 9) {
 			c = node->x / 10;

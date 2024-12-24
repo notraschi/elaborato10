@@ -6,23 +6,10 @@ static bigint* bigint_alloc(digit x) {
 
 	if (tmp != NULL) {
 		tmp->x = x;
-		tmp->next = tmp;
-		tmp->prev = tmp;
+		tmp->next = NULL;
+		tmp->prev = NULL;
 	}
 	return tmp;
-}
-
-static int bigint_delete(bigint* N) {
-	if (N == NULL) {
-		return 1;
-	}
-	else {
-		bigint* prv = N->prev, * nxt = N->next;
-		nxt->prev = prv;
-		prv->next = nxt;
-		free(N);
-		return 0;
-	}
 }
 
 static int bigint_insert_after(bigint* N, digit x) {
@@ -36,6 +23,23 @@ static int bigint_insert_after(bigint* N, digit x) {
 			tmp->next = nxt;
 			prv->next = tmp;
 			nxt->prev = tmp;
+		}
+		return tmp == NULL;
+	}
+}
+
+static int head_insert(bigint** N, digit x) {
+	if (N == NULL) return 1;
+	else if (*N == NULL) {
+		return (*N = bigint_alloc(x)) == NULL;
+	}
+	else {
+		bigint* tmp = bigint_alloc(x);
+
+		if (tmp != NULL) {
+			tmp->next = *N;
+			(*N)->prev = tmp;
+			*N = tmp;
 		}
 		return tmp == NULL;
 	}
@@ -73,7 +77,6 @@ static int handle_carry(bigint* tail) {
 	}
 	if (node->x > 9) {
 		if (bigint_insert_head(node, c) == 1) return 1;
-		printf("\nallocated new head");
 	}
 	return 0;
 }
@@ -96,15 +99,30 @@ static void add_zeroes(bigint* n, unsigned int zeroes) {
 
 }
 
-static void digit_mult(bigint* n, unsigned int k) { /*takes MSB*/
-	bigint* node = n;
-	while (node->next != NULL) {
-		node->x *= k;
-		node = node->next;
+static bigint* digit_mult(bigint* n, unsigned int k) { /*takes LSB, no carry for now*/
+	
+	bigint* node = n, *res = bigint_alloc(node->x * k);
+
+	node = node->prev;
+	while (node != NULL) {
+		head_insert(&res, node->x * k);
+		node = node->prev;
 	}
-	node->x *= k;
-	if (handle_carry(node)) printf("\nerror");
+	//tail->x *= k;
+	//if (handle_carry(tail)) printf("\nerror");
+	return res;
 }
+
+///*clones a NON-NULL bigint*/
+//static bigint* clone(bigint* n) {
+//	bigint* c = bigint_alloc(n->x), *t = c;
+//	while (n != NULL) {
+//		bigint_insert_after(t, n->x);
+//		n = n->next;
+//		t = t->next;
+//	}
+//	return c;
+//}
 
 bigint *mul(bigint *N1, bigint *N2) {
 	bigint *N = NULL;
@@ -130,9 +148,10 @@ bigint *mul(bigint *N1, bigint *N2) {
 		len++;
 	}
 
+	/*note: n is lsb of N2, d is MSB of N1*/
 	
-	/**/
 
+	N = digit_mult(n, d->x);
 	N->x *= sign;
 	return N;
 }

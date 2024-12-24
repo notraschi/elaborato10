@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="cl_bigint.c" />
     <ClCompile Include="dl_bigint.c" />
+    <ClCompile Include="dl_mul.c" />
     <ClCompile Include="mul.c" />
   </ItemGroup>
   <ItemGroup>

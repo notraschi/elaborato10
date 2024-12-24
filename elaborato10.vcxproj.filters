@@ -24,6 +24,9 @@
     <ClCompile Include="dl_bigint.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dl_mul.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bigint.h">

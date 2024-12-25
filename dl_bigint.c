@@ -35,6 +35,42 @@ static int head_insert(bigint** N, digit x) {
 	}
 }
 
+/*from 2019*/
+static int bigint_delete(bigint* N) {
+	if (N == NULL) {
+		return 1;
+	}
+	else {
+		if (N->next != NULL)
+			N->next->prev = N->prev;
+		if (N->prev != NULL)
+			N->prev->next = N->next;
+		free(N);
+		return 0;
+	}
+}
+
+/*from 2019*/
+static int head_delete(bigint** N) {
+	if (N == NULL || *N == NULL) {
+		return 1;
+	}
+	else {
+		bigint* tmp = *N;
+
+		*N = (*N)->next;
+		return bigint_delete(tmp);
+	}
+}
+
+/*from 2019*/
+static void remove_leading_zeros(bigint** N) {
+	if (N != NULL) {
+		while (*N != NULL && (*N)->x == 0 && (*N)->next != NULL)
+			head_delete(N);
+	}
+}
+
 /*works - does not move pointer*/
 static int handle_carry(bigint* lsb, bigint** msb) {
 	bigint* node = lsb;
@@ -165,6 +201,7 @@ bigint *mul(bigint *N1, bigint *N2) {
 	}
 
 	N->x *= sign;
+	remove_leading_zeros(&N);
 	return N;
 }
 

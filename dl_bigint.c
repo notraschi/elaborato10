@@ -55,13 +55,9 @@ static int handle_carry(bigint* lsb, bigint** msb) {
 		c = node->x / 10;
 		node->x %= 10;
 		if (head_insert(&node, c) == 1) return 1;
-		//msb = msb->prev;
 		*msb = node;
 	}
-	/*print(node);
-	print(msb);*/
-	print(*msb);
-	
+	/*print(*msb);*/
 	return 0;
 }
 
@@ -98,7 +94,7 @@ static bigint* digit_mult(bigint* lsb, unsigned int k) {
 	}
 	
 	if (handle_carry(res_lsb, &res)) printf("\ndigit mult error");
-	//print(res);
+	/*print(res);*/
 	return res;
 }
 
@@ -122,7 +118,7 @@ static bigint* bigint_sum(bigint* lsb1, bigint* lsb2) {
 		if (s2 != NULL) s2 = s2->prev;
 	}
 	if (handle_carry(res_lsb, &res)) printf("\nsum error");
-	print(res);
+	/*print(res);*/
 	return res;
 }
 

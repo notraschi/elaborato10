@@ -71,7 +71,7 @@ static void remove_leading_zeros(bigint** N) {
 	}
 }
 
-/*works - does not move pointer*/
+/*works*/
 static int handle_carry(bigint* lsb, bigint** msb) {
 	bigint* node = lsb;
 
@@ -118,7 +118,7 @@ static void add_zeroes(bigint* n, unsigned int zeroes) {
 	if (z_head != NULL) z_head->prev = last_node;
 }
 
-/*works - does not move poiter*/
+/*works*/
 static bigint* digit_mult(bigint* lsb, unsigned int k) {
 	
 	bigint* node = lsb, *res = bigint_alloc(node->x * k), *res_lsb = res;
@@ -134,7 +134,7 @@ static bigint* digit_mult(bigint* lsb, unsigned int k) {
 	return res;
 }
 
-/*yea it works dw*/
+/*works*/
 static bigint* bigint_sum(bigint* lsb1, bigint* lsb2) {
 	
 	bigint* s1 = lsb1, * s2 = lsb2;
@@ -168,7 +168,8 @@ bigint *mul(bigint *N1, bigint *N2) {
 	}
 
 	/*setup*/
-	bigint* n = N2, *r = N = bigint_alloc(0), *d = N1;
+	bigint* n = N2, *d = N1;
+	N = bigint_alloc(0);
 	if (N == NULL) return NULL; 
 	
 	/*gestisco segno*/
@@ -182,22 +183,19 @@ bigint *mul(bigint *N1, bigint *N2) {
 		n = n->next;
 		len++;
 	}
-
 	while (d->next != NULL) {
 		d = d->next;
 	}
 
-	/*note: n is LSB of N2, d is LSB of N1, r is LSB of N*/
+	/*note: n is LSB of N2, d is LSB of N1*/
 	unsigned int i;
 	for (i = 0; i <= len; i++)
 	{
 		bigint* res = digit_mult(d, n->x);
 		n = n->prev;
 		add_zeroes(res, i);
-		//printf("res: ");  print(res);
 
 		N = bigint_sum(N, res);
-		//printf("N: ");  print(N);
 	}
 
 	N->x *= sign;

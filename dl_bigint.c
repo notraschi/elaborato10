@@ -3,6 +3,8 @@
 
 static void print(bigint* N);
 
+/*############################# code ################################*/
+
 /*from 2019*/
 static bigint* bigint_alloc(digit x) {
 	bigint* tmp = (bigint*)malloc(sizeof(bigint));
@@ -34,7 +36,7 @@ static int head_insert(bigint** N, digit x) {
 }
 
 /*works - does not move pointer*/
-static int handle_carry(bigint* lsb) {
+static int handle_carry(bigint* lsb, bigint** msb) {
 	bigint* node = lsb;
 
 	/*redundant set in case of not entering loop*/
@@ -50,8 +52,16 @@ static int handle_carry(bigint* lsb) {
 		node->x += c;
 	}
 	if (node->x > 9) {
+		c = node->x / 10;
+		node->x %= 10;
 		if (head_insert(&node, c) == 1) return 1;
+		//msb = msb->prev;
+		*msb = node;
 	}
+	/*print(node);
+	print(msb);*/
+	print(*msb);
+	
 	return 0;
 }
 
@@ -87,17 +97,19 @@ static bigint* digit_mult(bigint* lsb, unsigned int k) {
 		node = node->prev;
 	}
 	
-	if (handle_carry(res_lsb)) printf("\ndigit mult error");
+	if (handle_carry(res_lsb, &res)) printf("\ndigit mult error");
+	//print(res);
 	return res;
 }
 
 /*yea it works dw*/
 static bigint* bigint_sum(bigint* lsb1, bigint* lsb2) {
 	
-	bigint* res = bigint_alloc(lsb1->x + lsb2->x), *s1 = lsb1, *s2 = lsb2, * res_lsb = res;
-
+	bigint* s1 = lsb1, * s2 = lsb2;
 	while (s1->next != NULL) s1 = s1->next;
 	while (s2->next != NULL) s2 = s2->next;
+
+	bigint* res = bigint_alloc(s1->x + s2->x), * res_lsb = res;
 
 	s1 = s1->prev;
 	s2 = s2->prev;
@@ -109,7 +121,8 @@ static bigint* bigint_sum(bigint* lsb1, bigint* lsb2) {
 		if (s1 != NULL) s1 = s1->prev;
 		if (s2 != NULL) s2 = s2->prev;
 	}
-	if (handle_carry(res_lsb)) printf("\nsum error");
+	if (handle_carry(res_lsb, &res)) printf("\nsum error");
+	print(res);
 	return res;
 }
 
@@ -149,10 +162,10 @@ bigint *mul(bigint *N1, bigint *N2) {
 		bigint* res = digit_mult(d, n->x);
 		n = n->prev;
 		add_zeroes(res, i);
-		print(res);
+		//printf("res: ");  print(res);
 
 		N = bigint_sum(N, res);
-		print(N);
+		//printf("N: ");  print(N);
 	}
 
 	N->x *= sign;
@@ -177,14 +190,20 @@ static void print(bigint* N) {
 int main(int argc, char* argv[]) {
 	bigint* N1, * N2, * N;
 
-	N1 = bigint_alloc(0);
-	head_insert(&N1, 1);
-	N2 = bigint_alloc(0);
+	N1 = bigint_alloc(9);
+	N2 = bigint_alloc(3);
+	head_insert(&N2, 2);
+	head_insert(&N2, 7);
+	head_insert(&N2, 9);
+	head_insert(&N2, 8);
+	head_insert(&N2, 6);
+	head_insert(&N2, 5);
+	head_insert(&N2, 4);
 	head_insert(&N2, 1);
 	N = mul(N1, N2);
 
 	/*print(N1);
-	print(N2);*/
+	print(N2)*/;
 	printf("\n");
 	print(N);
 

@@ -87,11 +87,31 @@ static bigint* digit_mult(bigint* lsb, unsigned int k) {
 		node = node->prev;
 	}
 	
-	if (handle_carry(res_lsb)) printf("\nerror");
+	if (handle_carry(res_lsb)) printf("\ndigit mult error");
 	return res;
 }
 
+/*yea it works dw*/
+static bigint* bigint_sum(bigint* lsb1, bigint* lsb2) {
+	
+	bigint* res = bigint_alloc(lsb1->x + lsb2->x), *s1 = lsb1, *s2 = lsb2, * res_lsb = res;
 
+	while (s1->next != NULL) s1 = s1->next;
+	while (s2->next != NULL) s2 = s2->next;
+
+	s1 = s1->prev;
+	s2 = s2->prev;
+	while (s1 != NULL || s2 != NULL) {
+		head_insert(&res,
+			(s1 != NULL ? s1->x : 0) +
+			(s2 != NULL ? s2->x : 0)
+		);
+		if (s1 != NULL) s1 = s1->prev;
+		if (s2 != NULL) s2 = s2->prev;
+	}
+	if (handle_carry(res_lsb)) printf("\nsum error");
+	return res;
+}
 
 /**/
 bigint *mul(bigint *N1, bigint *N2) {
@@ -118,12 +138,24 @@ bigint *mul(bigint *N1, bigint *N2) {
 		len++;
 	}
 
-	/*note: n is lsb of N2, d is MSB of N1*/
-	
+	while (d->next != NULL) {
+		d = d->next;
+	}
 
-	N = digit_mult(n, d->x);
+	/*note: n is LSB of N2, d is LSB of N1, r is LSB of N*/
+	unsigned int i;
+	for (i = 0; i <= len; i++)
+	{
+		bigint* res = digit_mult(d, n->x);
+		n = n->prev;
+		add_zeroes(res, i);
+		print(res);
+
+		N = bigint_sum(N, res);
+		print(N);
+	}
+
 	N->x *= sign;
-	add_zeroes(N, 3);
 	return N;
 }
 
@@ -145,10 +177,15 @@ static void print(bigint* N) {
 int main(int argc, char* argv[]) {
 	bigint* N1, * N2, * N;
 
-	N1 = bigint_alloc(2);
-	N2 = bigint_alloc(4);
+	N1 = bigint_alloc(0);
+	head_insert(&N1, 1);
+	N2 = bigint_alloc(0);
+	head_insert(&N2, 1);
 	N = mul(N1, N2);
 
+	/*print(N1);
+	print(N2);*/
+	printf("\n");
 	print(N);
 
 	return 0;

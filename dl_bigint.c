@@ -1,10 +1,6 @@
 #include <stdlib.h>
 #include "bigint.h"
 
-static void print(bigint* N);
-
-/*############################# code ################################*/
-
 /*from 2019*/
 static bigint* bigint_alloc(digit x) {
 	bigint* tmp = (bigint*)malloc(sizeof(bigint));
@@ -203,40 +199,3 @@ bigint *mul(bigint *N1, bigint *N2) {
 	return N;
 }
 
-/*############################# testing ################################*/
-
-static void print(bigint* N) {
-	if (N == NULL) {
-		printf("NaN");
-	}
-	else {
-		while (N != NULL) {
-			printf("%d -> ", N->x);
-			N = N->next;
-		}
-	}
-	printf("\n");
-}
-
-int main(int argc, char* argv[]) {
-	bigint* N1, * N2, * N;
-
-	N1 = bigint_alloc(9);
-	N2 = bigint_alloc(3);
-	head_insert(&N2, 2);
-	head_insert(&N2, 7);
-	head_insert(&N2, 9);
-	head_insert(&N2, 8);
-	head_insert(&N2, 6);
-	head_insert(&N2, 5);
-	head_insert(&N2, 4);
-	head_insert(&N2, 1);
-	N = mul(N1, N2);
-
-	/*print(N1);
-	print(N2)*/;
-	printf("\n");
-	print(N);
-
-	return 0;
-}
